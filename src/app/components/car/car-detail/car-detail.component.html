@@ -1,0 +1,107 @@
+<div *ngIf="dataLoaded" class="row mt-4">
+  <div class="col-md-7">
+    <div id="carImageSlide" class="carousel slide" data-bs-ride="carousel">
+      <div
+        class="carousel-inner d-flex"
+        style="height: 50vh; min-height: 20rem; max-height: 30rem"
+      >
+        <div
+          *ngFor="let image of car.imagePaths; index as i; first as firstImage"
+          class="carousel-item align-self-center"
+          [ngClass]="{ active: firstImage }"
+          style="height: 100%; width: 100%"
+        >
+          <img
+            [src]="imageUrl + image"
+            class=""
+            style="height: 100%; width: 100%; object-fit: contain"
+            [alt]="i"
+          />
+        </div>
+
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carImageSlide"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carImageSlide"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header">
+        Arac Detaylari
+        <a
+          *ngIf="user && user.role === 'admin'"
+          routerLink="/carUpdate/{{ car.carID }}"
+          class="btn btn-outline-primary float-end"
+        >
+          <fa-icon [icon]="faEdit"></fa-icon>
+        </a>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped mt-2">
+          <tbody>
+            <tr>
+              <th scope="row">Marka</th>
+              <td>{{ car.brandName }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Model</th>
+              <td>{{ car.carName }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Renk</th>
+              <td>{{ car.colorName }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Fiyat</th>
+              <td>
+                {{
+                  car.dailyPrice | currency: "TRY":"symbol-narrow":"1.2-2"
+                }}/Gunluk
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Yil</th>
+              <td>{{ car.modelYear }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Aciklama</th>
+              <td>{{ car.description }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Findeks Puani</th>
+              <td>{{ car.findexScore }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer">
+        <app-rental-add
+          *ngIf="customer"
+          [car]="car"
+          [customer]="customer"
+        ></app-rental-add>
+        <div *ngIf="!user">Teklif almak ve kiralamak icin giris yapiniz</div>
+        <div *ngIf="user && !customer">
+          Teklif almak ve kiralamak icin profilinizden musteri bilgilerinizi
+          guncelleyiniz
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

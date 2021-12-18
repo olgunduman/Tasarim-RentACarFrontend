@@ -1,0 +1,108 @@
+<form [formGroup]="rentalAddForm" class="form row">
+  <div class="col-md-6">
+    <label for="rentDate" class="form-label">Teslim alinacak tarih</label>
+    <div class="form-group mb-3">
+      <input
+        type="date"
+        id="rentDate"
+        formControlName="rentDate"
+        class="form-control"
+        min="{{ currentDate | date: 'yyyy-MM-dd' }}"
+        [attr.disabled]="carAvailable"
+      />
+    </div>
+  </div>
+  <div class="col-md-6">
+    <label for="returnDate" class="form-label">Teslim edilecek tarih</label>
+    <div class="form-group mb-3">
+      <input
+        type="date"
+        id="returnDate"
+        formControlName="returnDate"
+        class="form-control"
+        min="{{ nextDate | date: 'yyyy-MM-dd' }}"
+        [attr.disabled]="rentalAddForm.value.rentDate === '' || carAvailable"
+        (click)="changeDate()"
+      />
+    </div>
+  </div>
+</form>
+<div
+  *ngIf="
+    rentalAddForm.valid &&
+    rentalAddForm.value.returnDate <= rentalAddForm.value.rentDate
+  "
+>
+  <p class="alert alert-danger">
+    Teslim edilecek tarih, teslim alinma tarihinden en az 1 gun sonra olmalidir!
+  </p>
+</div>
+
+<!-- Button trigger modal -->
+<div class="float-start">
+  <p *ngIf="!checkFindexScore()" class="alert alert-danger" role="alert">
+    Findeks Puaniniz ({{ customer.findexScore }}) bu araci kiralamak icin yeterli degil!
+  </p>
+  <p *ngIf="carAvailable === false" class="alert alert-danger" role="alert">
+    Arac belirtilen tarihte uygun degil!
+  </p>
+  <p *ngIf="carAvailable" class="alert alert-success" role="alert">
+    Arac kiralamaya uygun!
+  </p>
+</div>
+<div class="float-end">
+  <button
+    *ngIf="carAvailable != null"
+    type="button"
+    class="btn btn-danger mx-2"
+    (click)="reset()"
+  >
+    Sifirla
+  </button>
+  <button
+    *ngIf="!carAvailable"
+    type="button"
+    class="btn btn-primary"
+    [disabled]="
+      rentalAddForm.invalid ||
+      rentalAddForm.value.returnDate <= rentalAddForm.value.rentDate ||
+      !checkFindexScore()
+    "
+    (click)="checkAvailability()"
+  >
+    Kontrol Et
+  </button>
+  <button
+    *ngIf="carAvailable"
+    type="button"
+    class="btn btn-primary"
+    [disabled]="
+      rentalAddForm.invalid ||
+      rentalAddForm.value.returnDate <= rentalAddForm.value.rentDate ||
+      !checkFindexScore()
+    "
+    data-bs-toggle="modal"
+    data-bs-target="#paymentModal"
+  >
+    Odeme yap ve kirala
+  </button>
+</div>
+
+<!-- Modal -->
+<div
+  *ngIf="true"
+  class="modal fade"
+  id="paymentModal"
+  tabindex="-1"
+  aria-labelledby="Payment"
+  aria-hidden="true"
+>
+  <app-payment
+    (onSuccess)="onSuccess()"
+    (onError)="onError()"
+    [totalAmount]="totalAmount"
+    [days]="days"
+    [carName]="car.carName"
+    [customerID]="customer.customerID"
+  ></app-payment>
+</div>

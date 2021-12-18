@@ -1,0 +1,195 @@
+<div *ngIf="car" class="container row">
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="title">Araci Guncelle</h5>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="carUpdateForm" class="form">
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              id="carName"
+              formControlName="carName"
+              class="form-control"
+              placeholder="Arac adi"
+              [ngClass]="{
+                'is-invalid':
+                  carUpdateForm.get('carName').touched &&
+                  carUpdateForm.get('carName').invalid
+              }"
+            />
+            <label for="carName">Arac Adi</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <select
+              class="form-select"
+              [ngClass]="{
+                'is-invalid':
+                  carUpdateForm.get('brandID').touched &&
+                  carUpdateForm.get('brandID').invalid
+              }"
+              aria-label="Renk"
+              formControlName="brandID"
+            >
+              <option
+                class="form-control"
+                *ngFor="let brand of brands"
+                [ngValue]="brand.brandID"
+              >
+                {{ brand.brandName }}
+              </option>
+            </select>
+            <label for="brandID">Marka</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <select
+              class="form-select"
+              [ngClass]="{
+                'is-invalid':
+                  carUpdateForm.get('colorID').touched &&
+                  carUpdateForm.get('colorID').invalid
+              }"
+              aria-label="Renk"
+              formControlName="colorID"
+            >
+              <option
+                type="number"
+                class="form-control"
+                *ngFor="let color of colors"
+                [ngValue]="color.colorID"
+              >
+                {{ color.colorName }}
+              </option>
+            </select>
+            <label for="colorID">Renk</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input
+              type="number"
+              id="dailyPrice"
+              formControlName="dailyPrice"
+              class="form-control"
+              placeholder="Arac adi"
+              [ngClass]="{
+                'is-invalid':
+                  carUpdateForm.get('dailyPrice').touched &&
+                  carUpdateForm.get('dailyPrice').invalid
+              }"
+            />
+            <label for="dailyPrice"
+              >Gunluk fiyat
+              {{
+                carUpdateForm.value.dailyPrice
+                  | currency: "TRY":"symbol-narrow":"1.2-2"
+              }}</label
+            >
+          </div>
+
+          <div class="form-floating mb-3">
+            <input
+              type="number"
+              id="modelYear"
+              formControlName="modelYear"
+              class="form-control"
+              placeholder="Arac adi"
+              [ngClass]="{
+                'is-invalid':
+                  carUpdateForm.get('modelYear').touched &&
+                  carUpdateForm.get('modelYear').invalid
+              }"
+            />
+            <label for="modelYear">Model Yili</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              id="description"
+              formControlName="description"
+              class="form-control"
+              placeholder="Aciklama"
+              [ngClass]="{
+                'is-invalid':
+                  carUpdateForm.get('description').touched &&
+                  carUpdateForm.get('description').invalid
+              }"
+            />
+            <label for="description">Aciklama</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input
+              type="number"
+              id="findexScore"
+              formControlName="findexScore"
+              class="form-control"
+              placeholder="Findeks Puani"
+              min="0"
+              max="1900"
+              [ngClass]="{
+                'is-invalid':
+                  carUpdateForm.get('findexScore').touched &&
+                  carUpdateForm.get('findexScore').invalid
+              }"
+            />
+            <label for="findexScore">Findeks Puani</label>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-fill btn-primary" (click)="update()">
+          Guncelle
+        </button>
+
+        <!-- Button trigger modal -->
+        <button
+          type="button"
+          class="btn btn-outline-danger float-end"
+          data-bs-toggle="modal"
+          data-bs-target="#deleteCar"
+        >
+          <fa-icon [icon]="faTrash"></fa-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <app-image [car]="car"></app-image>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="deleteCar"
+  tabindex="-1"
+  aria-labelledby="deleteCarLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteCarLabel">Araci Sil</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">Araci silmek istediginizden emin misiniz?</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Iptal
+        </button>
+        <button type="button" class="btn btn-danger" (click)="delete()">
+          <fa-icon [icon]="faTrash"></fa-icon> Evet, sil
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

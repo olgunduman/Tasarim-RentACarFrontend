@@ -1,0 +1,102 @@
+<div *ngIf="dataLoaded" class="row">
+  <div class="col-md-3">
+    <div class="mb-4">
+      <app-color [user]="user" (colorNames)="getColorNames($event)"></app-color>
+    </div>
+    <div class="mb-4">
+      <app-brand [user]="user" (brandNames)="getBrandNames($event)"></app-brand>
+    </div>
+  </div>
+
+  <div class="col-md-9">
+    <div
+      class="d-flex flex-wrap justify-content-center justify-content-xl-start"
+      style="gap: 0.75em; padding: 0"
+    >
+      <form
+        [formGroup]="carFilterForm"
+        (ngSubmit)="applyFilter()"
+        class="d-flex w-100"
+        style="gap: 0.2rem"
+      >
+        <input
+          class="p-2 form-control"
+          placeholder="Arac ismi"
+          formControlName="carFilterText"
+          name="carFilterText"
+          id="carFilterText"
+        />
+        <select
+          formControlName="brandFilterText"
+          class="form-select p-2"
+          aria-label="Select a brand"
+          name="brandFilterText"
+          id="brandFilterText"
+        >
+          <option value="" selected>Marka Secin</option>
+          <option *ngFor="let brandName of brandNames" [value]="brandName">
+            {{ brandName }}
+          </option>
+        </select>
+
+        <select
+          formControlName="colorFilterText"
+          class="form-select p-2"
+          aria-label="Select a color"
+          name="colorFilterText"
+          id="colorFilterText"
+        >
+          <option value="" selected>Renk Secin</option>
+          <option *ngFor="let colorName of colorNames" [value]="colorName">
+            {{ colorName }}
+          </option>
+        </select>
+        <button class="btn btn-primary" type="submit">Filtrele</button>
+      </form>
+      <div
+        *ngFor="
+          let car of carsDto
+            | carFilterPipe: carFilterText:colorFilterText:brandFilterText
+        "
+        class="card"
+        style="
+          width: 18vw;
+          min-width: 16rem;
+          max-width: 18rem;
+          min-height: 18rem;
+          max-height: 23rem;
+        "
+      >
+        <div class="d-flex" style="height: 45%">
+          <img
+            [src]="imageUrl + car.imagePaths[0]"
+            class="card-img-top align-self-center"
+            [alt]="car.carName"
+            style="max-height: 100%; max-width: 100%; object-fit: cover"
+          />
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ car.carName }}</h5>
+          <p class="card-text">
+            <b>Marka: </b>{{ car.brandName }} <br />
+            <b>Renk: </b>{{ car.colorName }} <br />
+            <b>Fiyat: </b>
+            {{
+              car.dailyPrice | currency: "TRY":"symbol-narrow":"1.2-2"
+            }}/Gunluk
+          </p>
+          <a routerLink="/carDetail/{{ car.carID }}" class="btn btn-primary"
+            >Incele</a
+          >
+          <a
+            *ngIf="isLoggedIn() && user.role === 'admin'"
+            routerLink="/carUpdate/{{ car.carID }}"
+            class="btn btn-outline-primary float-end"
+          >
+            <fa-icon [icon]="faEdit"></fa-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
